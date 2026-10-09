@@ -30,6 +30,7 @@ export type Product = {
   is_featured: boolean;
   is_special: boolean;
   special_ends_at: string | null;
+  sort_order: number;
   created_at: string;
   category: { name: string; slug: string } | null;
   images: ProductImage[];

@@ -71,6 +71,7 @@ export async function saveProduct(_prev: AdminState, formData: FormData): Promis
     is_featured: formData.get("is_featured") === "on",
     is_special: formData.get("is_special") === "on",
     special_ends_at: get("special_ends_at") ? new Date(get("special_ends_at")).toISOString() : null,
+    sort_order: Math.floor(Number(get("sort_order")) || 0),
   };
 
   const result = id

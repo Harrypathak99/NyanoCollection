@@ -35,7 +35,8 @@ async function Products() {
   const { data } = await supabase
     .from("products")
     .select("id, name, slug, price, stock, is_active, is_featured, is_special, category:categories(name), images:product_images(url, sort_order)")
-    .order("created_at", { ascending: false });
+    .order("sort_order")
+    .order("name");
   const products = (data ?? []) as unknown as Row[];
 
   return (

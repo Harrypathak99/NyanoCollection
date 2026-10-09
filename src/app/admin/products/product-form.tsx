@@ -21,6 +21,7 @@ export type ProductFormValues = {
   is_featured?: boolean;
   is_special?: boolean;
   special_ends_at?: string | null;
+  sort_order?: number;
 };
 
 export function ProductForm({
@@ -86,6 +87,7 @@ export function ProductForm({
         <Check name="is_special" label="Homepage special offer" defaultChecked={product.is_special ?? false} />
       </fieldset>
       <Field label="Special offer ends at" name="special_ends_at" type="datetime-local" defaultValue={endsAt} />
+      <Field label="Display order (lower shows first)" name="sort_order" type="number" defaultValue={product.sort_order ?? 0} />
 
       <div className="flex items-center gap-4 md:col-span-2">
         <button type="submit" disabled={pending} className="btn-dark">

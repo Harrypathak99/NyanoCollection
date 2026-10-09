@@ -8,7 +8,7 @@ import type { Category, Product, SortOption } from "@/lib/types";
 
 const PRODUCT_SELECT = `
   id, name, slug, short_description, description, price, compare_at_price, stock, colors,
-  scent, burn_time, weight, is_featured, is_special, special_ends_at, created_at,
+  scent, burn_time, weight, is_featured, is_special, special_ends_at, sort_order, created_at,
   category:categories(name, slug),
   images:product_images(url, alt, sort_order)
 `;
@@ -39,7 +39,7 @@ function sortProducts(products: Product[], sort: SortOption) {
     case "name":
       return list.sort((a, b) => a.name.localeCompare(b.name));
     default:
-      return list.sort((a, b) => Number(b.is_featured) - Number(a.is_featured) || a.name.localeCompare(b.name));
+      return list.sort((a, b) => Number(b.is_featured) - Number(a.is_featured) || a.sort_order - b.sort_order);
   }
 }
 
@@ -48,7 +48,11 @@ export async function getAllProducts(): Promise<Product[]> {
   cacheTag("products");
   cacheLife("hours");
 
-  const { data, error } = await createPublicClient().from("products").select(PRODUCT_SELECT);
+  const { data, error } = await createPublicClient()
+    .from("products")
+    .select(PRODUCT_SELECT)
+    .order("sort_order")
+    .order("name");
   if (error) throw new Error(error.message);
   return (data as unknown as ProductRow[]).map(normalize);
 }
