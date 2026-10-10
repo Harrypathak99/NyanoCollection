@@ -67,7 +67,10 @@ async function FeaturedProducts() {
 
   return (
     <section className="container-page pb-16 pt-6 lg:pb-24 lg:pt-8">
-      <SocialLinks size={20} className="mb-10 justify-end lg:mb-14" />
+      <div className="mb-10 flex items-center justify-end gap-5 lg:mb-14">
+        <span className="text-[12px] font-medium uppercase tracking-[0.12em] text-body">Connect with us</span>
+        <SocialLinks size={20} />
+      </div>
       <SectionTitle>Be like a candle, give your warmth and light to others</SectionTitle>
       <div className="mx-auto grid max-w-[1000px] grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
         {products.map((p, i) => (

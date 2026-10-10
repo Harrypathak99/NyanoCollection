@@ -4,7 +4,7 @@ import { useStore } from "@/components/store-provider";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
-/** Pill button "ADD TO CART | $47.00" used in the special offer block. */
+/** Pill button "ADD TO CART | Rs. 47" used in the special offer block. */
 export function AddToCartPill({ product }: { product: Product }) {
   const { addToCart } = useStore();
   const soldOut = product.stock <= 0;

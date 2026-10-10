@@ -14,7 +14,7 @@ export const SITE = {
 };
 
 export const ANNOUNCEMENTS = [
-  { text: "Free shipping over $50!", href: "/shipping" },
+  { text: "Free shipping over Rs. 1,000!", href: "/shipping" },
   { text: "Because it can change your mood", href: "/shop" },
   { text: "Bright your every day", href: "/shop?sort=newest" },
 ];

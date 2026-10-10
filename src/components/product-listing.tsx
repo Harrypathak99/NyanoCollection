@@ -9,10 +9,10 @@ import type { Category, Product } from "@/lib/types";
 type Filters = { category?: string; sale?: boolean; min?: number; max?: number; sort?: string; q?: string };
 
 const PRICE_RANGES = [
-  { label: "Under $20", min: undefined, max: 20 },
-  { label: "$20 – $40", min: 20, max: 40 },
-  { label: "$40 – $60", min: 40, max: 60 },
-  { label: "Over $60", min: 60, max: undefined },
+  { label: "Under Rs. 500", min: undefined, max: 500 },
+  { label: "Rs. 500 – Rs. 1,000", min: 500, max: 1000 },
+  { label: "Rs. 1,000 – Rs. 2,000", min: 1000, max: 2000 },
+  { label: "Over Rs. 2,000", min: 2000, max: undefined },
 ];
 
 /** Builds a /shop URL that keeps the current filters and applies `changes`. */

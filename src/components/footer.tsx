@@ -8,11 +8,11 @@ export function Footer() {
       <div className="container-page grid gap-10 border-t border-line pt-14 pb-12 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.4fr] lg:border-t-0">
         {FOOTER_LINKS.map((group) => (
           <div key={group.title}>
-            <h3 className="mb-4 font-sans text-[14px] font-medium text-ink">{group.title}</h3>
-            <ul className="space-y-2">
+            <h3 className="mb-5 font-sans text-[17px] font-medium text-ink">{group.title}</h3>
+            <ul className="space-y-2.5">
               {group.links.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-[12px] text-body transition-colors hover:text-accent">
+                  <Link href={link.href} className="text-[15px] text-body transition-colors hover:text-accent">
                     {link.label}
                   </Link>
                 </li>
