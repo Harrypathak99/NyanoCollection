@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FacebookIcon, InstagramIcon, PinterestIcon, XIcon } from "@/components/icons";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { FOOTER_LINKS, SITE } from "@/lib/site";
 
@@ -31,37 +30,14 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="container-page flex flex-col items-center gap-5 pb-10 sm:grid sm:grid-cols-3 sm:items-center">
-        <ul className="flex items-center gap-4 text-ink sm:justify-self-start">
-          <li>
-            <a href={SITE.social.pinterest} target="_blank" rel="noreferrer" aria-label="Pinterest" className="hover:text-accent">
-              <PinterestIcon />
-            </a>
-          </li>
-          <li>
-            <a href={SITE.social.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-accent">
-              <FacebookIcon />
-            </a>
-          </li>
-          <li>
-            <a href={SITE.social.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-accent">
-              <InstagramIcon />
-            </a>
-          </li>
-          <li>
-            <a href={SITE.social.x} target="_blank" rel="noreferrer" aria-label="X" className="hover:text-accent">
-              <XIcon />
-            </a>
-          </li>
-        </ul>
-
-        <Link href="/" className="whitespace-nowrap font-sans text-[18px] font-medium uppercase tracking-[0.16em] text-ink sm:justify-self-center">
+      <div className="container-page flex flex-col items-center gap-5 pb-10 sm:flex-row sm:justify-between">
+        <Link href="/" className="whitespace-nowrap font-sans text-[18px] font-medium uppercase tracking-[0.16em] text-ink">
           {SITE.name}
         </Link>
 
         <Link
           href="/shipping"
-          className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-body hover:text-accent sm:justify-self-end"
+          className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-body hover:text-accent"
         >
           <span className="rounded-sm border border-line px-2 py-1 text-ink">Cash on delivery</span>
         </Link>

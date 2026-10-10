@@ -6,6 +6,7 @@ import { HeroSlider, type Slide } from "@/components/hero-slider";
 import { PlayIcon } from "@/components/icons";
 import { ProductCard } from "@/components/product-card";
 import { ShopFrame } from "@/components/shop-frame";
+import { SocialLinks } from "@/components/social-links";
 import { SectionTitle, Sprig } from "@/components/ui";
 import { getCategories, getFeaturedProducts, getSpecialProduct } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
@@ -65,7 +66,8 @@ async function FeaturedProducts() {
   const products = await getFeaturedProducts(8);
 
   return (
-    <section className="container-page py-16 lg:py-24">
+    <section className="container-page pb-16 pt-6 lg:pb-24 lg:pt-8">
+      <SocialLinks size={20} className="mb-10 justify-end lg:mb-14" />
       <SectionTitle>Be like a candle, give your warmth and light to others</SectionTitle>
       <div className="mx-auto grid max-w-[1000px] grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
         {products.map((p, i) => (
