@@ -49,7 +49,7 @@ async function ProductView({ slug }: { slug: string }) {
   const onSale = product.compare_at_price != null && product.compare_at_price > product.price;
 
   const details = [
-    ["Category", product.category?.name],
+    [product.categories.length > 1 ? "Categories" : "Category", product.categories.map((c) => c.name).join(", ")],
     ["Scent", product.scent],
     ["Burn time", product.burn_time],
     ["Weight", product.weight],

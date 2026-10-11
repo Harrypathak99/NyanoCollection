@@ -32,7 +32,10 @@ export type Product = {
   special_ends_at: string | null;
   sort_order: number;
   created_at: string;
+  /** Main category (breadcrumbs, product page label). */
   category: { name: string; slug: string } | null;
+  /** Every category the product is in, main one first. */
+  categories: { name: string; slug: string }[];
   images: ProductImage[];
 };
 

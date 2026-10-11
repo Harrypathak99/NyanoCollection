@@ -54,10 +54,19 @@ export async function saveProduct(_prev: AdminState, formData: FormData): Promis
     .split(/[\s,]+/)
     .filter((c) => HEX_RE.test(c));
 
+  // Several categories can be ticked. The main one (breadcrumbs, product page label)
+  // stays the same while it's still ticked; otherwise it becomes the first ticked one.
+  const categoryIds = [...new Set(formData.getAll("category_ids").map(String).filter(Boolean))];
+  let mainCategory = categoryIds[0] ?? null;
+  if (id && categoryIds.length) {
+    const { data: current } = await supabase.from("products").select("category_id").eq("id", id).maybeSingle();
+    if (current?.category_id && categoryIds.includes(current.category_id)) mainCategory = current.category_id;
+  }
+
   const row = {
     name,
     slug: slugify(get("slug") || name),
-    category_id: get("category_id") || null,
+    category_id: mainCategory,
     short_description: get("short_description") || null,
     description: get("description") || null,
     price,
@@ -81,6 +90,16 @@ export async function saveProduct(_prev: AdminState, formData: FormData): Promis
     return { ok: false, message: result.error.code === "23505" ? "That URL slug is already used by another product." : result.error.message };
   }
   const productId = result.data.id as string;
+
+  // Replace the product's category links with the ticked ones.
+  const unlink = await supabase.from("product_categories").delete().eq("product_id", productId);
+  if (unlink.error) return { ok: false, message: `Could not update categories: ${unlink.error.message}` };
+  if (categoryIds.length) {
+    const link = await supabase
+      .from("product_categories")
+      .insert(categoryIds.map((category_id) => ({ product_id: productId, category_id })));
+    if (link.error) return { ok: false, message: `Could not update categories: ${link.error.message}` };
+  }
 
   // Only one product can be the homepage special offer.
   if (row.is_special) await supabase.from("products").update({ is_special: false }).neq("id", productId).eq("is_special", true);
@@ -125,13 +144,31 @@ export async function deleteProductImage(formData: FormData) {
   updateTag("products");
 }
 
-export async function deleteProduct(formData: FormData) {
+/** Deletes a product and its uploaded photos. Past orders keep their item snapshot. */
+async function removeProductById(id: string): Promise<AdminState> {
   await assertAdmin();
   const supabase = await createClient();
-  // Past orders keep their item snapshot, so deleting a product is safe.
-  await supabase.from("products").delete().eq("id", String(formData.get("id")));
+
+  const { data: images } = await supabase.from("product_images").select("url").eq("product_id", id);
+  const { data: deleted, error } = await supabase.from("products").delete().eq("id", id).select("id");
+  if (error) return { ok: false, message: error.message };
+  if (!deleted?.length) return { ok: false, message: "Product not found or already deleted." };
+
+  const marker = "/object/public/product-images/";
+  const paths = (images ?? []).filter((i) => i.url.includes(marker)).map((i) => i.url.split(marker)[1]);
+  if (paths.length) await supabase.storage.from("product-images").remove(paths);
+
   updateTag("products");
-  redirect("/admin/products");
+  return { ok: true, message: "Product deleted." };
+}
+
+export async function deleteProductById(id: string): Promise<AdminState> {
+  return removeProductById(id);
+}
+
+export async function deleteProduct(formData: FormData) {
+  const result = await removeProductById(String(formData.get("id")));
+  if (result?.ok) redirect("/admin/products");
 }
 
 export async function saveCategory(_prev: AdminState, formData: FormData): Promise<AdminState> {

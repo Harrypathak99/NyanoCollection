@@ -1,11 +1,9 @@
-import { FacebookIcon, InstagramIcon, PinterestIcon, XIcon } from "@/components/icons";
+import { InstagramIcon, TikTokIcon } from "@/components/icons";
 import { SITE } from "@/lib/site";
 
 const LINKS = [
-  { label: "Pinterest", href: SITE.social.pinterest, Icon: PinterestIcon },
-  { label: "Facebook", href: SITE.social.facebook, Icon: FacebookIcon },
   { label: "Instagram", href: SITE.social.instagram, Icon: InstagramIcon },
-  { label: "X", href: SITE.social.x, Icon: XIcon },
+  { label: "TikTok", href: SITE.social.tiktok, Icon: TikTokIcon },
 ];
 
 export function SocialLinks({ size = 20, className = "" }: { size?: number; className?: string }) {

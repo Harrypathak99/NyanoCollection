@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AdminSkeleton, AdminTitle, Card, td, th } from "../ui";
+import { DeleteProductButton } from "./delete-product-button";
 import { requireAdmin } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -25,7 +26,7 @@ type Row = {
   is_active: boolean;
   is_featured: boolean;
   is_special: boolean;
-  category: { name: string } | null;
+  links: { category: { name: string } | null }[];
   images: { url: string; sort_order: number }[];
 };
 
@@ -34,7 +35,7 @@ async function Products() {
   const supabase = await createClient();
   const { data } = await supabase
     .from("products")
-    .select("id, name, slug, price, stock, is_active, is_featured, is_special, category:categories(name), images:product_images(url, sort_order)")
+    .select("id, name, slug, price, stock, is_active, is_featured, is_special, links:product_categories(category:categories(name)), images:product_images(url, sort_order)")
     .order("sort_order")
     .order("name");
   const products = (data ?? []) as unknown as Row[];
@@ -59,6 +60,7 @@ async function Products() {
                 <th className={th}>Price</th>
                 <th className={th}>Stock</th>
                 <th className={th}>Status</th>
+                <th className={`${th} w-16 text-center`}>Delete</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
@@ -74,7 +76,9 @@ async function Products() {
                         <span className="font-medium">{p.name}</span>
                       </Link>
                     </td>
-                    <td className={`${td} text-body`}>{p.category?.name ?? "—"}</td>
+                    <td className={`${td} text-body`}>
+                      {p.links.flatMap((l) => (l.category ? [l.category.name] : [])).join(", ") || "—"}
+                    </td>
                     <td className={td}>{formatPrice(p.price)}</td>
                     <td className={`${td} ${p.stock === 0 ? "text-red-600" : p.stock < 6 ? "text-accent" : ""}`}>{p.stock}</td>
                     <td className={td}>
@@ -84,6 +88,11 @@ async function Products() {
                         </span>
                         {p.is_featured && <span className="rounded-full px-2 py-0.5 text-sky-700 ring-1 ring-sky-200">Featured</span>}
                         {p.is_special && <span className="rounded-full px-2 py-0.5 text-accent ring-1 ring-orange-200">Special</span>}
+                      </span>
+                    </td>
+                    <td className={`${td} text-center`}>
+                      <span className="inline-flex">
+                        <DeleteProductButton id={p.id} name={p.name} />
                       </span>
                     </td>
                   </tr>

@@ -19,7 +19,7 @@ async function Categories() {
   const supabase = await createClient();
   const { data } = await supabase
     .from("categories")
-    .select("id, name, slug, description, image_url, sort_order, is_active, products(count)")
+    .select("id, name, slug, description, image_url, sort_order, is_active, product_categories(count)")
     .order("sort_order");
 
   return (
@@ -33,7 +33,7 @@ async function Categories() {
         {(data ?? []).map((c) => (
           <Card key={c.id}>
             <p className="mb-3 text-[13px] text-muted">
-              {(c.products as unknown as { count: number }[])[0]?.count ?? 0} products
+              {(c.product_categories as unknown as { count: number }[])[0]?.count ?? 0} products
             </p>
             <CategoryForm category={c} />
           </Card>

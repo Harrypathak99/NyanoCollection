@@ -19,6 +19,8 @@ export default function imageLoader({ src, width, quality }: LoaderProps) {
     const url = new URL(src.replace("/object/public/", "/render/image/public/"));
     url.searchParams.set("width", String(width));
     url.searchParams.set("quality", String(q));
+    // Without this, Supabase keeps the original height and crops the sides.
+    url.searchParams.set("resize", "contain");
     return url.toString();
   }
 

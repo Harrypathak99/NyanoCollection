@@ -8,6 +8,7 @@ export type ProductFormValues = {
   name?: string;
   slug?: string;
   category_id?: string | null;
+  category_ids?: string[];
   short_description?: string | null;
   description?: string | null;
   price?: number;
@@ -39,20 +40,24 @@ export function ProductForm({
       {product.id && <input type="hidden" name="id" value={product.id} />}
       <Field label="Name *" name="name" defaultValue={product.name} required />
       <Field label="URL slug (leave blank to generate)" name="slug" defaultValue={product.slug} />
-      <div>
-        <label htmlFor="category_id" className="label">
-          Category
-        </label>
-        <select id="category_id" name="category_id" defaultValue={product.category_id ?? ""} className="input">
-          <option value="">No category</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </div>
       <Field label="Stock *" name="stock" type="number" min={0} defaultValue={product.stock ?? 0} required />
+      <fieldset className="md:col-span-2">
+        <legend className="label">Categories (select one or more)</legend>
+        <div className="flex flex-wrap gap-x-6 gap-y-2 rounded border border-line px-4 py-3">
+          {categories.map((c) => (
+            <label key={c.id} className="flex items-center gap-2 text-[14px]">
+              <input
+                type="checkbox"
+                name="category_ids"
+                value={c.id}
+                defaultChecked={(product.category_ids ?? []).includes(c.id)}
+                className="h-4 w-4 accent-[#e8834e]"
+              />
+              {c.name}
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <Field label="Price *" name="price" type="number" step="0.01" min={0} defaultValue={product.price} required />
       <Field label="Compare-at price (shows as sale)" name="compare_at_price" type="number" step="0.01" min={0} defaultValue={product.compare_at_price ?? ""} />
       <Field label="Short description" name="short_description" defaultValue={product.short_description ?? ""} className="md:col-span-2" />

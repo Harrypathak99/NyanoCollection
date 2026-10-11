@@ -22,12 +22,14 @@ async function EditProduct({ params }: { params: PageProps<"/admin/products/[id]
   await requireAdmin();
   const { id } = await params;
   const supabase = await createClient();
-  const [{ data: product }, { data: categories }, { data: images }] = await Promise.all([
+  const [{ data: product }, { data: categories }, { data: images }, { data: links }] = await Promise.all([
     supabase.from("products").select("*").eq("id", id).maybeSingle(),
     supabase.from("categories").select("id, name").order("sort_order"),
     supabase.from("product_images").select("id, url, sort_order").eq("product_id", id).order("sort_order"),
+    supabase.from("product_categories").select("category_id").eq("product_id", id),
   ]);
   if (!product) notFound();
+  product.category_ids = (links ?? []).map((l) => l.category_id);
 
   return (
     <>

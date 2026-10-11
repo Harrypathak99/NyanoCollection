@@ -28,7 +28,7 @@ export function CompareView() {
     if (!ids) return;
     createClient()
       .from("products")
-      .select("id, scent, burn_time, weight, stock, colors, price, category:categories(name)")
+      .select("id, scent, burn_time, weight, stock, colors, price, category:categories!products_category_id_fkey(name)")
       .in("id", ids.split(","))
       .then(({ data }) => {
         const map: Record<string, Details> = {};

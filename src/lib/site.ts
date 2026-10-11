@@ -4,12 +4,10 @@ export const SITE = {
   email: "hello@nyanocollection.com",
   phone: "+977 980-0000000",
   address: "Kathmandu, Nepal",
-  instagram: "nyanocollection",
+  instagram: "nyanoo_collection",
   social: {
-    pinterest: "https://www.pinterest.com/",
-    facebook: "https://www.facebook.com/",
-    instagram: "https://www.instagram.com/",
-    x: "https://x.com/",
+    instagram: "https://www.instagram.com/nyanoo_collection",
+    tiktok: "https://www.tiktok.com/@nyano_collection",
   },
 };
 

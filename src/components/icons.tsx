@@ -134,6 +134,11 @@ export const InstagramIcon = (p: IconProps) => (
     <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
   </svg>
 );
+export const TikTokIcon = (p: IconProps) => (
+  <svg width={p.size ?? 13} height={p.size ?? 13} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M16.6 3c.3 2.3 1.6 3.9 3.9 4.1v3.1c-1.4.1-2.6-.3-3.9-1.1v5.8c0 3.7-2.5 6.1-5.9 6.1A5.8 5.8 0 0 1 5 15.2c0-3.6 2.9-6.2 6.6-5.8v3.2c-.4-.1-.8-.2-1.1-.2-1.6 0-2.6 1.1-2.6 2.7 0 1.5 1.1 2.7 2.6 2.7 1.7 0 2.8-1 2.8-3.2V3h3.3Z" />
+  </svg>
+);
 export const XIcon = (p: IconProps) => (
   <svg width={p.size ?? 12} height={p.size ?? 12} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.3-8.3L2 3h6.4l4.4 5.8L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z" />

@@ -9,18 +9,24 @@ import type { Category, Product, SortOption } from "@/lib/types";
 const PRODUCT_SELECT = `
   id, name, slug, short_description, description, price, compare_at_price, stock, colors,
   scent, burn_time, weight, is_featured, is_special, special_ends_at, sort_order, created_at,
-  category:categories(name, slug),
+  category:categories!products_category_id_fkey(name, slug),
+  links:product_categories(category:categories(name, slug)),
   images:product_images(url, alt, sort_order)
 `;
 
-type ProductRow = Omit<Product, "price" | "compare_at_price"> & {
+type ProductRow = Omit<Product, "price" | "compare_at_price" | "categories"> & {
   price: number | string;
   compare_at_price: number | string | null;
+  links: { category: { name: string; slug: string } | null }[] | null;
 };
 
-function normalize(row: ProductRow): Product {
+function normalize({ links, ...row }: ProductRow): Product {
+  const categories = (links ?? []).flatMap((l) => (l.category ? [l.category] : []));
+  // Main category first, then the rest alphabetically.
+  categories.sort((a, b) => Number(b.slug === row.category?.slug) - Number(a.slug === row.category?.slug) || a.name.localeCompare(b.name));
   return {
     ...row,
+    categories: categories.length ? categories : row.category ? [row.category] : [],
     price: Number(row.price),
     compare_at_price: row.compare_at_price == null ? null : Number(row.compare_at_price),
     images: [...(row.images ?? [])].sort((a, b) => a.sort_order - b.sort_order),
@@ -65,13 +71,13 @@ export async function getCategories(): Promise<Category[]> {
 
   const { data, error } = await createPublicClient()
     .from("categories")
-    .select("id, name, slug, description, image_url, sort_order, products(count)")
+    .select("id, name, slug, description, image_url, sort_order, product_categories(count)")
     .order("sort_order");
   if (error) throw new Error(error.message);
 
-  return (data ?? []).map(({ products, ...c }) => ({
+  return (data ?? []).map(({ product_categories, ...c }) => ({
     ...c,
-    product_count: (products as unknown as { count: number }[])[0]?.count ?? 0,
+    product_count: (product_categories as unknown as { count: number }[])[0]?.count ?? 0,
   }));
 }
 
@@ -94,12 +100,12 @@ export async function getProducts(filters: ProductFilters = {}) {
   const q = filters.q?.trim().toLowerCase();
 
   const filtered = all.filter((p) => {
-    if (filters.category && p.category?.slug !== filters.category) return false;
+    if (filters.category && !p.categories.some((c) => c.slug === filters.category)) return false;
     if (filters.sale && !(p.compare_at_price && p.compare_at_price > p.price)) return false;
     if (filters.min != null && p.price < filters.min) return false;
     if (filters.max != null && p.price > filters.max) return false;
     if (q) {
-      const haystack = [p.name, p.short_description, p.scent, p.category?.name].join(" ").toLowerCase();
+      const haystack = [p.name, p.short_description, p.scent, ...p.categories.map((c) => c.name)].join(" ").toLowerCase();
       if (!q.split(/\s+/).every((word) => haystack.includes(word))) return false;
     }
     return true;
@@ -125,7 +131,9 @@ export async function getProduct(slug: string) {
 
 export async function getRelatedProducts(product: Product, limit = 4) {
   const all = await getAllProducts();
-  const sameCategory = all.filter((p) => p.id !== product.id && p.category?.slug === product.category?.slug);
-  const others = all.filter((p) => p.id !== product.id && p.category?.slug !== product.category?.slug);
+  const slugs = new Set(product.categories.map((c) => c.slug));
+  const shares = (p: Product) => p.categories.some((c) => slugs.has(c.slug));
+  const sameCategory = all.filter((p) => p.id !== product.id && shares(p));
+  const others = all.filter((p) => p.id !== product.id && !shares(p));
   return [...sameCategory, ...others].slice(0, limit);
 }
